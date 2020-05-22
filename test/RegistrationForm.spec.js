@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils'
-import Logo from '@/components/Logo.vue'
+import RegistrationForm from '@/components/RegistrationForm.vue'
 
 describe('Logo', () => {
   test('is a Vue instance', () => {
-    const wrapper = mount(Logo)
+    const wrapper = mount(RegistrationForm)
     expect(wrapper.isVueInstance()).toBeTruthy()
   })
 })

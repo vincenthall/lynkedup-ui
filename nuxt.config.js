@@ -42,7 +42,13 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/axios'],
+  modules: ['@nuxtjs/axios', '@nuxtjs/auth'],
+  /**
+   * Router options
+   */
+  router: {
+    middleware: ['auth']
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
@@ -68,9 +74,36 @@ export default {
    ** Build configuration
    */
   build: {
+    transpile: ['@nuxtjs/auth'],
     /*
      ** You can extend webpack config here
      */
     extend(config, ctx) {}
+  },
+  /**
+   * Auth options
+   */
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: 'http://lynkedup-api.test/api/login',
+            method: 'post',
+            propertyName: 'token'
+          }
+        },
+        tokenRequired: true,
+        tokenType: 'bearer'
+      },
+      'laravel.passport': {
+        url: 'http://lynkedup-api.test/api',
+        client_id: '3',
+        client_secret: 'o5GGgbiVpRPxqwCps8HNV2q16K9rwXlUKNNLwLZQ'
+      },
+      customStrategy: {
+        _scheme: '~/schemes/customScheme'
+      }
+    }
   }
 }

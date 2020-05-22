@@ -46,11 +46,13 @@
         required
       ></v-checkbox>
 
-      <v-btn :disabled="!valid" color="success" class="mr-4" @click="register"
+      <v-btn
+        :disabled="!valid"
+        color="deep-purple accent-4"
+        class="mr-4"
+        @click="register"
         >Register</v-btn
       >
-
-      <v-btn color="error" class="mr-4" @click="reset">Reset Form</v-btn>
     </v-form>
     <div v-show="response" class="wrapper">{{ message }}</div>
   </div>
@@ -103,9 +105,6 @@ export default {
       this.response = res.data
       this.message = res.data.message
       this.status = res.status
-    },
-    reset() {
-      this.$refs.form.reset()
     }
   }
 }

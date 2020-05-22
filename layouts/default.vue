@@ -1,12 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
+    <v-navigation-drawer v-model="drawer" absolute bottom temporary app>
       <v-list>
         <v-list-item
           v-for="(item, i) in items"
@@ -24,12 +18,10 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar color="deep-purple accent-4" :clipped-left="clipped" fixed app>
+    <v-app-bar color="deep-purple accent-4" fixed app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
       <v-toolbar-title v-text="title" />
+      <v-icon>mdi-fire</v-icon>
       <v-spacer />
       <UserNavGroup v-show="authenticated" />
       <GuestNavGroup v-show="!authenticated" />
@@ -59,7 +51,6 @@ export default {
   data() {
     return {
       authenticated: false,
-      clipped: false,
       drawer: false,
       fixed: false,
       items: [
@@ -74,7 +65,6 @@ export default {
           to: '/register'
         }
       ],
-      miniVariant: false,
       right: true,
       rightDrawer: false,
       title: 'LynkedUp'

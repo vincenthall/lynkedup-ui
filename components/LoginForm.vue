@@ -2,14 +2,14 @@
   <div class="wrapper">
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-text-field
-        v-model="email"
+        v-model="login.email"
         color="deep-purple accent-4"
         :rules="emailRules"
         label="E-mail"
         required
       ></v-text-field>
       <v-text-field
-        v-model="password"
+        v-model="login.password"
         color="deep-purple accent-4"
         type="password"
         :rules="passwordRules"
@@ -20,11 +20,12 @@
         :disabled="!valid"
         color="deep-purple accept-4"
         class="mr-4"
-        @click="login"
+        @click="userLogin"
         >Login</v-btn
       >
     </v-form>
     <h1 v-show="message">{{ message }}</h1>
+    <h1 v-show="loggedIn">{{ loggedIn }}</h1>
     <v-banner two-line class="banner">
       <v-avatar slot="icon" color="deep-purple accent-4" size="40">
         <v-icon icon="mdi-lock" color="white">
@@ -47,12 +48,14 @@
 export default {
   data: () => ({
     valid: true,
-    email: '',
+    login: {
+      email: '',
+      password: ''
+    },
     emailRules: [
       (v) => !!v || 'E-mail is required',
       (v) => /.+@.+\..+/.test(v) || 'E-mail must be valid'
     ],
-    password: '',
     passwordRules: [
       (v) => !!v || 'Name is required',
       (v) => /[a-zA-Z0-9]/.test(v) || 'Password must be valid.'
@@ -62,20 +65,21 @@ export default {
     status: null,
     registerUrl: '/register'
   }),
-
+  computed: {
+    loggedIn() {
+      return this.$auth.loggedIn
+    }
+  },
   methods: {
-    async login() {
-      const res = await this.$axios({
-        method: 'POST',
-        url: 'http://lynkedup-api.test/api/login',
-        data: {
-          email: this.email,
-          password: this.password
-        }
-      })
-      this.response = res.data
-      this.message = res.message
-      this.status = res.status
+    async userLogin() {
+      try {
+        const response = await this.$auth.loginWith('laravel.passport', {
+          data: this.login
+        })
+        this.response = response
+      } catch (err) {
+        this.message = err
+      }
     }
   }
 }

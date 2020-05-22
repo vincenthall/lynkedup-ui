@@ -1,14 +1,20 @@
 <template>
-  <div>Nothing here...</div>
+  <div>
+    {{ counter }}
+  </div>
 </template>
 
 <script>
-export default {}
+// import { mapMutations } from 'vuex'
+
+export default {
+  auth: false,
+  computed: {
+    counter() {
+      return this.$store.state.counter
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
-div {
-  width: 50%;
-  margin: 0 auto;
-}
-</style>
+<style lang="scss" scoped></style>

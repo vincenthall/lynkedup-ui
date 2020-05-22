@@ -10,6 +10,7 @@
 import RegistrationForm from '~/components/RegistrationForm'
 
 export default {
+  auth: false,
   components: {
     RegistrationForm
   }
