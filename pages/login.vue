@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div>
     <LoginForm />
   </div>
 </template>
@@ -13,8 +13,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.wrapper {
-  margin-top: 50px;
-}
-</style>
+<style lang="scss" scoped></style>

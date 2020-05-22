@@ -2,39 +2,33 @@
   <div class="wrapper">
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-text-field
-        v-model="login.email"
+        v-model="user.username"
+        name="email"
         color="deep-purple accent-4"
         :rules="emailRules"
         label="E-mail"
         required
       ></v-text-field>
       <v-text-field
-        v-model="login.password"
+        v-model="user.password"
         color="deep-purple accent-4"
         type="password"
+        name="password"
         :rules="passwordRules"
         label="Password"
         required
       ></v-text-field>
       <v-btn
-        :disabled="!valid"
         color="deep-purple accept-4"
         class="mr-4"
-        @click="userLogin"
+        @click="passwordGrantLogin"
         >Login</v-btn
       >
     </v-form>
-    <h1 v-show="message">{{ message }}</h1>
-    <h1 v-show="loggedIn">{{ loggedIn }}</h1>
     <v-banner two-line class="banner">
       <v-avatar slot="icon" color="deep-purple accent-4" size="40">
-        <v-icon icon="mdi-lock" color="white">
-          mdi-lock
-        </v-icon>
-      </v-avatar>
-
-      No Account?
-
+        <v-icon icon="mdi-lock" color="white">mdi-lock</v-icon> </v-avatar
+      >No Account?
       <template v-slot:actions>
         <v-btn text color="deep-purple accent-4" :to="registerUrl" router exact
           >Register</v-btn
@@ -46,10 +40,12 @@
 
 <script>
 export default {
+  middleware: 'guest',
+  auth: false,
   data: () => ({
     valid: true,
-    login: {
-      email: '',
+    user: {
+      username: '',
       password: ''
     },
     emailRules: [
@@ -71,15 +67,17 @@ export default {
     }
   },
   methods: {
-    async userLogin() {
-      try {
-        const response = await this.$auth.loginWith('laravel.passport', {
-          data: this.login
-        })
-        this.response = response
-      } catch (err) {
-        this.message = err
-      }
+    async passwordGrantLogin() {
+      await this.$auth.loginWith('password_grant', {
+        data: {
+          grant_type: 'password',
+          client_id: process.env.PASSPORT_PASSWORD_GRANT_ID,
+          client_secret: process.env.PASSPORT_PASSWORD_GRANT_SECRET,
+          scope: '',
+          username: this.user.username,
+          password: this.user.password
+        }
+      })
     }
   }
 }
@@ -87,8 +85,8 @@ export default {
 
 <style scoped>
 .wrapper {
-  width: 30%;
-  margin: 0 auto;
+  width: 50%;
+  margin: 30px auto;
 }
 .banner {
   margin-top: 40px;

@@ -1,5 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
 
+require('dotenv').config()
+
 export default {
   mode: 'spa',
   /*
@@ -37,12 +39,16 @@ export default {
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module',
-    '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify',
+    '@nuxtjs/dotenv'
   ],
   /*
    ** Nuxt.js modules
    */
   modules: ['@nuxtjs/axios', '@nuxtjs/auth'],
+  axios: {
+    baseURL: process.env.LARAVEL_ENDPOINT
+  },
   /**
    * Router options
    */
@@ -84,25 +90,35 @@ export default {
    * Auth options
    */
   auth: {
+    redirect: {
+      login: '/login',
+      logout: '/',
+      callback: '/login',
+      home: '/profile'
+    },
     strategies: {
-      local: {
+      local: false,
+      password_grant: {
+        _scheme: 'local',
         endpoints: {
           login: {
-            url: 'http://lynkedup-api.test/api/login',
+            url: '/oauth/token',
             method: 'post',
-            propertyName: 'token'
+            propertyName: 'access_token'
+          },
+          logout: false,
+          user: {
+            url: 'api/auth/me',
+            method: 'get',
+            propertyName: 'user'
           }
-        },
-        tokenRequired: true,
-        tokenType: 'bearer'
+        }
       },
       'laravel.passport': {
-        url: 'http://lynkedup-api.test/api',
-        client_id: '3',
-        client_secret: 'o5GGgbiVpRPxqwCps8HNV2q16K9rwXlUKNNLwLZQ'
-      },
-      customStrategy: {
-        _scheme: '~/schemes/customScheme'
+        url: process.env.LARAVEL_ENDPOINT,
+        client_id: process.env.PASSPORT_CLIENT_ID,
+        client_secret: process.env.PASSPORT_CLIENT_SECRET,
+        userinfo_endpoint: process.env.LARAVEL_ENDPOINT + '/api/oauth/me'
       }
     }
   }

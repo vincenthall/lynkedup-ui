@@ -23,8 +23,8 @@
       <v-toolbar-title v-text="title" />
       <v-icon>mdi-fire</v-icon>
       <v-spacer />
-      <UserNavGroup v-show="authenticated" />
-      <GuestNavGroup v-show="!authenticated" />
+      <UserNavGroup v-show="this.$auth.loggedIn" />
+      <GuestNavGroup v-show="!this.$auth.loggedIn" />
     </v-app-bar>
     <v-content>
       <v-container>
