@@ -1,15 +1,20 @@
 <template>
   <div>
-    <v-btn
-      v-for="link in links"
-      :key="link.idx"
-      icon
-      router
-      class="btn"
-      :to="link.to"
-    >
-      <v-icon>{{ link.icon }}</v-icon>
+    <v-btn icon router class="btn" to="/search">
+      <v-icon>mdi-magnify</v-icon>
     </v-btn>
+    <v-chip
+      class="ma-2"
+      color="deep-purple accent-4"
+      icon
+      text-color="white"
+      to="/profile"
+    >
+      <v-avatar left>
+        <v-icon>mdi-account-circle</v-icon>
+      </v-avatar>
+      {{ user }}
+    </v-chip>
     <v-menu offset-y>
       <template v-slot:activator="{ on }">
         <v-btn icon router class="btn" dark v-on="on">
@@ -46,6 +51,11 @@ export default {
           to: '/profile'
         }
       ]
+    }
+  },
+  computed: {
+    user() {
+      return this.$auth.user.name.split(' ')[0]
     }
   },
   methods: {
