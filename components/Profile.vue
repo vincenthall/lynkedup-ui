@@ -64,11 +64,6 @@ export default {
         }
       ]
     }
-  },
-  computed: {
-    memberSince() {
-      return new Date(this.$auth.user.created_at).toLocaleDateString()
-    }
   }
 }
 </script>

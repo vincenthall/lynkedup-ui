@@ -35,6 +35,14 @@
         >
       </template>
     </v-banner>
+    <div class="text-center">
+      <v-snackbar v-model="snackbar" :timeout="timeout" top="true">
+        {{ text }}
+        <v-btn color="deep-purple accent-4" text @click="snackbar = false">
+          Close
+        </v-btn>
+      </v-snackbar>
+    </div>
   </div>
 </template>
 
@@ -59,7 +67,10 @@ export default {
     response: null,
     message: '',
     status: null,
-    registerUrl: '/register'
+    registerUrl: '/register',
+    snackbar: false,
+    text: '',
+    timeout: 4000
   }),
   computed: {
     loggedIn() {
@@ -68,16 +79,21 @@ export default {
   },
   methods: {
     async passwordGrantLogin() {
-      await this.$auth.loginWith('password_grant', {
-        data: {
-          grant_type: 'password',
-          client_id: process.env.PASSPORT_PASSWORD_GRANT_ID,
-          client_secret: process.env.PASSPORT_PASSWORD_GRANT_SECRET,
-          scope: '',
-          username: this.user.username,
-          password: this.user.password
-        }
-      })
+      try {
+        await this.$auth.loginWith('password_grant', {
+          data: {
+            grant_type: 'password',
+            client_id: process.env.PASSPORT_PASSWORD_GRANT_ID,
+            client_secret: process.env.PASSPORT_PASSWORD_GRANT_SECRET,
+            scope: '',
+            username: this.user.username,
+            password: this.user.password
+          }
+        })
+      } catch (e) {
+        this.text = 'Invalid credentials. Check your username or password.'
+        this.snackbar = true
+      }
     }
   }
 }

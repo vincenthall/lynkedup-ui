@@ -95,7 +95,7 @@ export default {
     async register() {
       const res = await this.$axios({
         method: 'POST',
-        url: 'http://lynkedup-api.test/api/register',
+        url: process.env.LARAVEL_ENDPOINT + '/api/register',
         data: {
           name: this.name,
           email: this.email,
