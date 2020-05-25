@@ -50,7 +50,6 @@ export default {
   },
   data() {
     return {
-      authenticated: false,
       drawer: false,
       fixed: false,
       items: [

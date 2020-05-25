@@ -63,7 +63,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12" lg="12">
+        <v-col cols="12" sm="12">
           <v-textarea
             v-model="fields.about"
             outlined
@@ -74,11 +74,58 @@
           ></v-textarea>
         </v-col>
       </v-row>
+      <v-divider></v-divider>
+      <v-row>
+        <v-col>
+          <v-icon>mdi-home-city</v-icon
+          ><span class="section-header">Demographics</span>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" sm="12">
+          <v-text-field
+            v-model="fields.address.street"
+            label="Street Address"
+            color="deep-purple"
+            outlined
+            @blur="updateProfile"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" sm="4">
+          <v-text-field
+            v-model="fields.address.city"
+            label="City"
+            color="deep-purple"
+            outlined
+            @blur="updateProfile"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" sm="4">
+          <v-select
+            v-model="fields.address.state"
+            :items="states"
+            color="deep-purple"
+            label="State"
+            outlined
+            @blur="updateProfile"
+          ></v-select>
+        </v-col>
+        <v-col cols="12" sm="4">
+          <v-text-field
+            v-model="fields.address.zip"
+            label="Zip"
+            color="deep-purple"
+            outlined
+            @blur="updateProfile"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" sm></v-col>
+      </v-row>
     </div>
-    <v-card-actions>
-      <v-btn text>Button</v-btn>
-      <v-btn text>Button</v-btn>
-    </v-card-actions>
   </v-card>
 </template>
 
@@ -89,14 +136,77 @@ export default {
       fields: {
         about: '',
         status: '',
-        jobTitle: ''
+        jobTitle: '',
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          zip: ''
+        }
       },
       user: this.$auth.user,
       profileData: null,
       asyncMessage: '',
       snackbar: false,
       snackbarText: '',
-      snackbarTimeout: 2500
+      snackbarTimeout: 2500,
+      states: [
+        'AK - Alaska',
+        'AL - Alabama',
+        'AR - Arkansas',
+        'AS - American Samoa',
+        'AZ - Arizona',
+        'CA - California',
+        'CO - Colorado',
+        'CT - Connecticut',
+        'DC - District of Columbia',
+        'DE - Delaware',
+        'FL - Florida',
+        'GA - Georgia',
+        'GU - Guam',
+        'HI - Hawaii',
+        'IA - Iowa',
+        'ID - Idaho',
+        'IL - Illinois',
+        'IN - Indiana',
+        'KS - Kansas',
+        'KY - Kentucky',
+        'LA - Louisiana',
+        'MA - Massachusetts',
+        'MD - Maryland',
+        'ME - Maine',
+        'MI - Michigan',
+        'MN - Minnesota',
+        'MO - Missouri',
+        'MS - Mississippi',
+        'MT - Montana',
+        'NC - North Carolina',
+        'ND - North Dakota',
+        'NE - Nebraska',
+        'NH - New Hampshire',
+        'NJ - New Jersey',
+        'NM - New Mexico',
+        'NV - Nevada',
+        'NY - New York',
+        'OH - Ohio',
+        'OK - Oklahoma',
+        'OR - Oregon',
+        'PA - Pennsylvania',
+        'PR - Puerto Rico',
+        'RI - Rhode Island',
+        'SC - South Carolina',
+        'SD - South Dakota',
+        'TN - Tennessee',
+        'TX - Texas',
+        'UT - Utah',
+        'VA - Virginia',
+        'VI - Virgin Islands',
+        'VT - Vermont',
+        'WA - Washington',
+        'WI - Wisconsin',
+        'WV - West Virginia',
+        'WY - Wyoming'
+      ]
     }
   },
   computed: {
@@ -120,6 +230,10 @@ export default {
       this.fields.about = response.data.about ?? ''
       this.fields.status = response.data.status ?? ''
       this.fields.jobTitle = response.data.job_title ?? ''
+      this.fields.address.street = response.data.street ?? ''
+      this.fields.address.city = response.data.city ?? ''
+      this.fields.address.state = response.data.state ?? ''
+      this.fields.address.zip = response.data.zip ?? ''
     },
     async updateProfile() {
       try {
@@ -132,7 +246,11 @@ export default {
           data: {
             about: this.fields.about,
             jobTitle: this.fields.jobTitle,
-            status: this.fields.status
+            status: this.fields.status,
+            street: this.fields.address.street,
+            city: this.fields.address.city,
+            state: this.fields.address.state,
+            zip: this.fields.address.zip
           }
         })
         this.asyncMessage = response.data.message
@@ -151,5 +269,8 @@ export default {
 <style lang="scss" scoped>
 .profile-inputs {
   margin-top: 30px;
+}
+.section-header {
+  margin-left: 10px;
 }
 </style>

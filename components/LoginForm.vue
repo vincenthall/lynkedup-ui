@@ -36,7 +36,7 @@
       </template>
     </v-banner>
     <div class="text-center">
-      <v-snackbar v-model="snackbar" :timeout="timeout" top="true">
+      <v-snackbar v-model="snackbar" :timeout="timeout" :top="top">
         {{ text }}
         <v-btn color="deep-purple accent-4" text @click="snackbar = false">
           Close
@@ -70,7 +70,8 @@ export default {
     registerUrl: '/register',
     snackbar: false,
     text: '',
-    timeout: 4000
+    timeout: 4000,
+    top: true
   }),
   computed: {
     loggedIn() {

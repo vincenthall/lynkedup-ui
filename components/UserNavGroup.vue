@@ -25,7 +25,7 @@
         <v-list-item
           v-for="(item, index) in items"
           :key="index"
-          @click="logout"
+          @click="item.action"
         >
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
@@ -38,7 +38,7 @@
 export default {
   data() {
     return {
-      items: [{ title: 'Logout', action: this.logout }],
+      // items: [{ title: 'Logout', action: this.logout }],
       links: [
         {
           icon: 'mdi-magnify',
@@ -56,9 +56,22 @@ export default {
   computed: {
     user() {
       return this.$auth.user.name.split(' ')[0]
+    },
+    items() {
+      if (!this.$auth.user.admin) {
+        return [{ title: 'Logout', action: this.logout }]
+      } else {
+        return [
+          { title: 'Admin', action: this.admin },
+          { title: 'Logout', action: this.logout }
+        ]
+      }
     }
   },
   methods: {
+    admin() {
+      return this.$router.push('/admin')
+    },
     logout() {
       this.$auth.logout()
     }

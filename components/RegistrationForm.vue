@@ -93,19 +93,23 @@ export default {
 
   methods: {
     async register() {
-      const res = await this.$axios({
-        method: 'POST',
-        url: process.env.LARAVEL_ENDPOINT + '/api/register',
-        data: {
-          name: this.name,
-          email: this.email,
-          password: this.password,
-          password_confirmation: this.passwordConfirm
-        }
-      })
-      this.response = res.data
-      this.message = res.data.message
-      this.status = res.status
+      try {
+        const res = await this.$axios({
+          method: 'POST',
+          url: process.env.LARAVEL_ENDPOINT + '/api/register',
+          data: {
+            name: this.name,
+            email: this.email,
+            password: this.password,
+            password_confirmation: this.passwordConfirm
+          }
+        })
+        this.response = res.data
+        this.message = res.data.message
+        this.status = res.status
+      } catch (e) {
+        this.message = e.message
+      }
     }
   }
 }
