@@ -232,7 +232,10 @@ export default {
       this.fields.jobTitle = response.data.job_title ?? ''
       this.fields.address.street = response.data.street ?? ''
       this.fields.address.city = response.data.city ?? ''
-      this.fields.address.state = response.data.state ?? ''
+      const [state] = this.states.filter((el) =>
+        el.includes(response.data.state) ? el : null
+      )
+      this.fields.address.state = state
       this.fields.address.zip = response.data.zip ?? ''
     },
     async updateProfile() {

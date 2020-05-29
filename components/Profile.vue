@@ -9,19 +9,9 @@
     >
       <v-tabs-slider></v-tabs-slider>
 
-      <v-tab href="#tab-1">
-        My Profile
-        <v-icon>mdi-account-circle</v-icon>
-      </v-tab>
-
-      <v-tab href="#tab-2">
-        Favorites
-        <v-icon>mdi-heart</v-icon>
-      </v-tab>
-
-      <v-tab href="#tab-3">
-        Contacts
-        <v-icon>mdi-account-box</v-icon>
+      <v-tab v-for="tab in tabData" :key="tab.id" :href="tab.href">
+        {{ tab.name }}
+        <v-icon>{{ tab.icon }}</v-icon>
       </v-tab>
     </v-tabs>
 
@@ -31,7 +21,8 @@
         :key="tab.name"
         :value="'tab-' + tab.id"
       >
-        <ProfileUser v-show="currentTab == 'tab-1'" />
+        <ProfileUser v-if="currentTab === 'tab-1'" />
+        <ProfileHistory v-if="currentTab === 'tab-2'" />
       </v-tab-item>
     </v-tabs-items>
   </v-card>
@@ -39,9 +30,11 @@
 
 <script>
 import ProfileUser from '~/components/ProfileUser'
+import ProfileHistory from '~/components/ProfileHistory'
 export default {
   components: {
-    ProfileUser
+    ProfileUser,
+    ProfileHistory
   },
   data() {
     return {
@@ -49,18 +42,31 @@ export default {
       tabData: [
         {
           id: 1,
+          href: '#tab-1',
           name: 'Profile',
-          text: 'This is the profile tab'
+          text: 'This is the profile tab',
+          icon: 'mdi-account-circle'
         },
         {
           id: 2,
-          name: 'Favorites',
-          text: 'This is the favorites tab'
+          href: '#tab-2',
+          name: 'Work History',
+          text: 'This is the work history tab',
+          icon: 'mdi-briefcase'
         },
         {
           id: 3,
-          name: 'Contacts',
-          text: 'This is the contact tab'
+          href: '#tab-3',
+          name: 'Skills',
+          text: 'This is the skills tab',
+          icon: 'mdi-certificate'
+        },
+        {
+          id: 4,
+          href: '#tab-4',
+          name: 'Education',
+          text: 'This is the education tab',
+          icon: 'mdi-school'
         }
       ]
     }
