@@ -8,7 +8,9 @@
       </v-avatar>
       Work History
       <template v-slot:actions>
-        <v-btn text color="deep-purple accent-4">Add Work History</v-btn>
+        <v-btn text color="deep-purple accent-4" @click="activateDialog"
+          >Add Work History</v-btn
+        >
       </template>
     </v-banner>
     <v-card class="mx-auto">
@@ -18,10 +20,12 @@
             <v-list-item :key="item.id">
               <template>
                 <v-list-item-content>
-                  <v-list-item-title v-text="item.title"></v-list-item-title>
+                  <v-list-item-title
+                    v-text="item.job_title"
+                  ></v-list-item-title>
                   <v-list-item-subtitle
                     class="text--primary"
-                    v-text="item.organization"
+                    v-text="item.org_name"
                   ></v-list-item-subtitle>
                   <v-list-item-subtitle
                     v-text="item.description"
@@ -30,7 +34,7 @@
 
                 <v-list-item-action>
                   <v-list-item-action-text
-                    v-text="`${item.startDate} - ${item.endDate}`"
+                    v-text="`${item.start_date} - ${item.end_date || ''}`"
                   ></v-list-item-action-text>
                   <div v-if="!item.current">
                     <v-icon color="grey lighten-1">
@@ -52,39 +56,72 @@
         </v-list-item-group>
       </v-list>
     </v-card>
+    <ProfileHistoryModal ref="modal" />
   </div>
 </template>
 
 <script>
+import ProfileHistoryModal from '~/components/ProfileHistoryModal'
 export default {
+  components: {
+    ProfileHistoryModal
+  },
   data: () => ({
     selected: [2],
-    items: [
-      {
-        id: 1,
-        title: 'Senior Software Engineer',
-        organization: 'Engineering Co.',
-        startDate: 'May, 2020',
-        endDate: 'present',
-        description:
-          'I use JavaScript and PHP to build open-source civic tech.',
-        current: true
-      },
-      {
-        id: 2,
-        action: 'SharePoint Administrator',
-        headline: 'Summer BBQ',
-        title: 'me, Scrott, Jennifer',
-        subtitle: "Wish I could come, but I'm out of town this weekend."
-      }
-    ]
-  })
+    items: []
+  }),
+  mounted() {
+    this.getHistory()
+  },
+  methods: {
+    async getHistory() {
+      const response = await this.$axios({
+        method: 'GET',
+        url: process.env.LARAVEL_ENDPOINT + '/api/jobhistory',
+        headers: {
+          Authorization: this.$auth.getToken('password_grant')
+        }
+      })
+      this.items = this.validateJobHistory(response.data)
+    },
+    validateJobHistory(data) {
+      const months = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+      ]
+      const validated = data.map((data) => {
+        const startDate = new Date(data.start_date)
+        const endDate = new Date(data.end_date)
+        data.start_date = `${
+          months[startDate.getMonth()]
+        } ${startDate.getFullYear()}`
+        data.end_date = data.end_date
+          ? `${months[endDate.getMonth()]} ${endDate.getFullYear()}`
+          : 'current'
+        return data
+      })
+      return validated
+    },
+    activateDialog() {
+      this.$refs.modal.activateDialog()
+    }
+  }
 }
 </script>
 
 <style scoped>
 .wrapper {
-  width: 50%;
+  width: 80%;
   margin: 20px auto;
 }
 .wrapper {

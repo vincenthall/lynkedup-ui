@@ -16,14 +16,8 @@
     </v-tabs>
 
     <v-tabs-items v-model="currentTab">
-      <v-tab-item
-        v-for="tab in tabData"
-        :key="tab.name"
-        :value="'tab-' + tab.id"
-      >
-        <ProfileUser v-if="currentTab === 'tab-1'" />
-        <ProfileHistory v-if="currentTab === 'tab-2'" />
-      </v-tab-item>
+      <ProfileUser v-if="currentTab === 'tab-1'" />
+      <ProfileHistory v-if="currentTab === 'tab-2'" />
     </v-tabs-items>
   </v-card>
 </template>
@@ -76,7 +70,7 @@ export default {
 
 <style scoped>
 .mx-auto {
-  width: 50%;
+  width: 80%;
   margin: 0 auto;
 }
 </style>
