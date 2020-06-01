@@ -79,7 +79,6 @@ export default {
             admin: this.admin
           }
         })
-        console.log(response.data.user)
         this.message = response.data.message
       } catch (e) {
         this.message = e.message

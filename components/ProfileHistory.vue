@@ -1,14 +1,20 @@
 <template>
   <div class="wrapper">
+    <v-snackbar v-model="snackbar" :timeout="timeout">
+      {{ snackbarText }}
+      <v-btn :color="color" text @click="snackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>
     <v-banner>
-      <v-avatar slot="icon" color="deep-purple accent-4" size="40">
+      <v-avatar slot="icon" :color="color" size="40">
         <v-icon icon="mdi-lock" color="white">
           mdi-domain
         </v-icon>
       </v-avatar>
       Work History
       <template v-slot:actions>
-        <v-btn text color="deep-purple accent-4" @click="activateDialog"
+        <v-btn text :color="color" @click="activateDialog"
           >Add Work History</v-btn
         >
       </template>
@@ -17,7 +23,7 @@
       <v-list two-line>
         <v-list-item-group v-model="selected" active-class="deep-purple">
           <template v-for="(item, index) in items">
-            <v-list-item :key="item.id">
+            <v-list-item :key="item.index" @click="activateEntryDialog(item)">
               <template>
                 <v-list-item-content>
                   <v-list-item-title
@@ -36,7 +42,7 @@
                   <v-list-item-action-text
                     v-text="`${item.start_date} - ${item.end_date || ''}`"
                   ></v-list-item-action-text>
-                  <div v-if="!item.current">
+                  <div v-if="item.end_date !== 'current'">
                     <v-icon color="grey lighten-1">
                       mdi-star
                     </v-icon>
@@ -57,21 +63,32 @@
       </v-list>
     </v-card>
     <ProfileHistoryModal ref="modal" />
+    <ProfileHistoryEntryModal ref="entryModal" />
   </div>
 </template>
 
 <script>
 import ProfileHistoryModal from '~/components/ProfileHistoryModal'
+import ProfileHistoryEntryModal from '~/components/ProfileHistoryEntryModal'
 export default {
   components: {
-    ProfileHistoryModal
+    ProfileHistoryModal,
+    ProfileHistoryEntryModal
   },
   data: () => ({
     selected: [2],
-    items: []
+    items: [],
+    snackbar: false,
+    snackbarText: '',
+    timeout: 2500,
+    color: 'deep-purple accent-4',
+    currentItem: null,
+    entryModal: false
   }),
   mounted() {
     this.getHistory()
+    this.$on('history-success', this.historySuccess)
+    this.$on('history-failed', this.historyFailed)
   },
   methods: {
     async getHistory() {
@@ -102,6 +119,8 @@ export default {
       const validated = data.map((data) => {
         const startDate = new Date(data.start_date)
         const endDate = new Date(data.end_date)
+        data.start_date_actual = data.start_date
+        data.end_date_actual = data.end_date
         data.start_date = `${
           months[startDate.getMonth()]
         } ${startDate.getFullYear()}`
@@ -114,6 +133,19 @@ export default {
     },
     activateDialog() {
       this.$refs.modal.activateDialog()
+    },
+    activateEntryDialog(item) {
+      this.currentItem = item
+      this.$refs.entryModal.activateDialog(item)
+    },
+    historySuccess(message) {
+      this.getHistory()
+      this.snackbarText = message
+      this.snackbar = true
+    },
+    historyFailed(message) {
+      this.snackbarText = message
+      this.snackbarText = true
     }
   }
 }

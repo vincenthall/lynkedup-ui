@@ -121,8 +121,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn :color="color" text @click="dialog = false">Close</v-btn>
-          <v-btn :color="color" text @click="submitHistory">Save</v-btn>
+          <v-btn color="red" text @click="deleteHistoryEntry">Delete</v-btn>
+          <v-btn :color="color" text @click="updateHistoryEntry">Update</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -135,25 +135,53 @@ export default {
     dialog: false,
     color: 'deep-purple accent-4',
     inputs: {
+      id: null,
       orgName: '',
       jobTitle: '',
       startDate: null,
       endDate: null,
       description: ''
     },
+    item: null,
     startDateMenu: false,
     endDateMenu: false
   }),
   methods: {
-    activateDialog() {
+    activateDialog(item) {
+      this.item = item
+      item = this.formatDates(item)
+      this.inputs.id = item.id
+      this.inputs.orgName = item.org_name
+      this.inputs.jobTitle = item.job_title
+      this.inputs.startDate = item.start_date
+      this.inputs.endDate = item.end_date
+      this.inputs.description = item.description
       this.dialog = true
     },
-    async submitHistory() {
+    formatDates(item) {
+      const startDate = new Date(item.start_date_actual)
+      const endDate = new Date(item.end_date_actual)
+      const startYear = startDate.getFullYear()
+      const endYear = endDate.getFullYear()
+      const startMonth =
+        startDate.getMonth().toString().length > 1
+          ? startDate.getMonth()
+          : `0${startDate.getMonth()}`
+      const endMonth =
+        endDate.getMonth().toString().length > 1
+          ? endDate.getMonth()
+          : `0${endDate.getMonth()}`
+      item.start_date = `${startYear}-${startMonth}`
+      item.end_date = `${endYear}-${endMonth}`
+      return item
+    },
+    async updateHistoryEntry() {
       this.dialog = false
       try {
         await this.$axios({
-          method: 'post',
-          url: process.env.LARAVEL_ENDPOINT + '/api/jobhistory',
+          method: 'patch',
+          url:
+            process.env.LARAVEL_ENDPOINT + '/api/jobhistory/' + this.inputs.id,
           headers: {
             Authorization: this.$auth.getToken('password_grant')
           },
@@ -165,16 +193,25 @@ export default {
             description: this.inputs.description
           }
         })
-        this.inputs = {
-          orgName: '',
-          jobTitle: '',
-          startDate: null,
-          endDate: null,
-          description: ''
-        }
-        this.$parent.$emit('history-success', 'Entry saved successfully.')
+        this.$parent.$emit('history-success', 'Entry updated successfully.')
       } catch (e) {
         this.$parent.$emit('history-failed', 'Entry failed to save.')
+      }
+    },
+    async deleteHistoryEntry() {
+      this.dialog = false
+      try {
+        await this.$axios({
+          method: 'delete',
+          url:
+            process.env.LARAVEL_ENDPOINT + '/api/jobhistory/' + this.inputs.id,
+          headers: {
+            Authorization: this.$auth.getToken('password_grant')
+          }
+        })
+        this.$parent.$emit('history-success', 'Record successfully deleted.')
+      } catch (e) {
+        this.$parent.$emit('history-failed', 'Failed to delete record.')
       }
     }
   }
