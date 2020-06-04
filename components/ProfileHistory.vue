@@ -22,7 +22,7 @@
     <v-card class="mx-auto">
       <v-list two-line>
         <v-list-item-group v-model="selected" active-class="deep-purple">
-          <template v-for="(item, index) in items">
+          <template v-for="(item, index) in history">
             <v-list-item :key="item.index" @click="activateEntryDialog(item)">
               <template>
                 <v-list-item-content>
@@ -68,8 +68,10 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex'
 import ProfileHistoryModal from '~/components/ProfileHistoryModal'
 import ProfileHistoryEntryModal from '~/components/ProfileHistoryEntryModal'
+
 export default {
   components: {
     ProfileHistoryModal,
@@ -86,51 +88,15 @@ export default {
     entryModal: false
   }),
   mounted() {
-    this.getHistory()
+    this.fetchAndValidateHistory()
     this.$on('history-success', this.historySuccess)
     this.$on('history-failed', this.historyFailed)
   },
+  computed: {
+    ...mapState('profile', ['history'])
+  },
   methods: {
-    async getHistory() {
-      const response = await this.$axios({
-        method: 'GET',
-        url: process.env.LARAVEL_ENDPOINT + '/api/jobhistory',
-        headers: {
-          Authorization: this.$auth.getToken('password_grant')
-        }
-      })
-      this.items = this.validateJobHistory(response.data)
-    },
-    validateJobHistory(data) {
-      const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-      ]
-      const validated = data.map((data) => {
-        const startDate = new Date(data.start_date)
-        const endDate = new Date(data.end_date)
-        data.start_date_actual = data.start_date
-        data.end_date_actual = data.end_date
-        data.start_date = `${
-          months[startDate.getMonth()]
-        } ${startDate.getFullYear()}`
-        data.end_date = data.end_date
-          ? `${months[endDate.getMonth()]} ${endDate.getFullYear()}`
-          : 'current'
-        return data
-      })
-      return validated
-    },
+    ...mapActions('profile', ['fetchAndValidateHistory']),
     activateDialog() {
       this.$refs.modal.activateDialog()
     },
@@ -139,7 +105,7 @@ export default {
       this.$refs.entryModal.activateDialog(item)
     },
     historySuccess(message) {
-      this.getHistory()
+      this.fetchAndValidateHistory()
       this.snackbarText = message
       this.snackbar = true
     },
