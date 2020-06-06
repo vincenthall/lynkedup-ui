@@ -110,6 +110,7 @@ export default {
         this.response = res.data
         this.message = res.data.message
         this.status = res.status
+        console.log(res.data)
       } catch (e) {
         this.message = e.message
       }
