@@ -59,6 +59,9 @@ export const actions = {
       root: true
     })
     commit('profile/setHistory', validated, { root: true })
+  },
+  setCurrentItem({ commit }, item) {
+    commit('profile/setCurrentItem', item, { root: true })
   }
 }
 

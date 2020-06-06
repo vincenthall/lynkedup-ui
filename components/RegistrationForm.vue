@@ -97,6 +97,9 @@ export default {
         const res = await this.$axios({
           method: 'POST',
           url: process.env.LARAVEL_ENDPOINT + '/api/register',
+          headers: {
+            Accept: 'application/json'
+          },
           data: {
             name: this.name,
             email: this.email,

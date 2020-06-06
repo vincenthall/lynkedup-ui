@@ -130,6 +130,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   data: () => ({
     dialog: false,
@@ -146,9 +147,15 @@ export default {
     startDateMenu: false,
     endDateMenu: false
   }),
+  computed: {
+    ...mapState('profile', ['history', 'currentItem'])
+  },
   methods: {
-    activateDialog(item) {
-      this.item = item
+    activateDialog() {
+      const currentItem = this.history.find(
+        (entry) => entry.id === this.currentItem
+      )
+      let item = JSON.parse(JSON.stringify(currentItem)) // TODO: This can't be right
       item = this.formatDates(item)
       this.inputs.id = item.id
       this.inputs.orgName = item.org_name

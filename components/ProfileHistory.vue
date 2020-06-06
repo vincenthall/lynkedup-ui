@@ -84,25 +84,24 @@ export default {
     snackbarText: '',
     timeout: 2500,
     color: 'deep-purple accent-4',
-    currentItem: null,
     entryModal: false
   }),
+  computed: {
+    ...mapState('profile', ['history', 'currentItem'])
+  },
   mounted() {
     this.fetchAndValidateHistory()
     this.$on('history-success', this.historySuccess)
     this.$on('history-failed', this.historyFailed)
   },
-  computed: {
-    ...mapState('profile', ['history'])
-  },
   methods: {
-    ...mapActions('profile', ['fetchAndValidateHistory']),
+    ...mapActions('profile', ['fetchAndValidateHistory', 'setCurrentItem']),
     activateDialog() {
       this.$refs.modal.activateDialog()
     },
     activateEntryDialog(item) {
-      this.currentItem = item
-      this.$refs.entryModal.activateDialog(item)
+      this.setCurrentItem(item.id)
+      this.$refs.entryModal.activateDialog()
     },
     historySuccess(message) {
       this.fetchAndValidateHistory()
