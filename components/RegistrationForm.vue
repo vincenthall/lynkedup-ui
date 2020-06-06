@@ -96,7 +96,7 @@ export default {
       try {
         const res = await this.$axios({
           method: 'POST',
-          url: process.env.LARAVEL_ENDPOINT + '/api/register',
+          url: process.env.LARAVEL_ENDPOINT + 'api/register',
           headers: {
             Accept: 'application/json'
           },
@@ -110,7 +110,6 @@ export default {
         this.response = res.data
         this.message = res.data.message
         this.status = res.status
-        console.log(res.data)
       } catch (e) {
         this.message = e.message
       }
