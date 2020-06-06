@@ -90,7 +90,9 @@ export default {
     response: null,
     message: null
   }),
-
+  mounted() {
+    console.log(process.env)
+  },
   methods: {
     async register() {
       try {
@@ -110,7 +112,6 @@ export default {
         this.response = res.data
         this.message = res.data.message
         this.status = res.status
-        console.log(process.env)
       } catch (e) {
         this.message = e.message
       }
