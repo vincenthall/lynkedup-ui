@@ -91,7 +91,7 @@ export default {
     message: null
   }),
   mounted() {
-    console.log(process.env)
+    console.log(process.env.LARAVEL_ENDPOINT)
   },
   methods: {
     async register() {
