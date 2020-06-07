@@ -12,4 +12,4 @@ fs.writeFileSync(
 console.log(process.env.PASSPORT_PASSWORD_GRANT_ID)
 console.log(process.env.PASSPORT_PASSWORD_GRANT_SECRET)
 
-console.log(fs.readFileSync('./.env'))
+console.log(fs.readFileSync('./.env').toString('utf8'))
