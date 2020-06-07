@@ -1,5 +1,6 @@
 export const state = () => ({
-  groups: null
+  groups: null,
+  myGroups: null
 })
 
 export const mutations = {
@@ -8,6 +9,9 @@ export const mutations = {
   },
   addGroup(state, group) {
     state.groups.push(group)
+  },
+  setMyGroups(state, myGroups) {
+    state.myGroups = myGroups
   }
 }
 
@@ -35,7 +39,17 @@ export const actions = {
         image_url: group.image_url
       }
     })
-    console.log(response.data)
     commit('groups/addGroup', response.data.group, { root: true })
+  },
+  async getMyGroups({ commit }) {
+    const response = await this.$axios({
+      method: 'get',
+      url: '/api/groups/me',
+      headers: {
+        Accept: 'application/json',
+        Authorization: this.$auth.getToken('password_grant')
+      }
+    })
+    commit('groups/setMyGroups', response.data.groups, { root: true })
   }
 }

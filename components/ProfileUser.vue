@@ -210,6 +210,12 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapState('profile', ['profile']),
+    memberSince() {
+      return new Date(this.$auth.user.created_at).toLocaleDateString()
+    }
+  },
   mounted() {
     const profile = JSON.parse(JSON.stringify(this.profile))
     const [state] = this.states.filter((state) =>
@@ -218,33 +224,7 @@ export default {
     profile.address.state = state
     this.fields = profile
   },
-  computed: {
-    ...mapState('profile', ['profile']),
-    memberSince() {
-      return new Date(this.$auth.user.created_at).toLocaleDateString()
-    }
-  },
   methods: {
-    // async getProfile() {
-    //   const response = await this.$axios({
-    //     method: 'get',
-    //     url: '/api/profile',
-    //     headers: {
-    //       Authorization: this.$auth.getToken('password_grant')
-    //     }
-    //   })
-    //   this.profileData = response.data
-    //   this.fields.about = response.data.about ?? ''
-    //   this.fields.status = response.data.status ?? ''
-    //   this.fields.jobTitle = response.data.job_title ?? ''
-    //   this.fields.address.street = response.data.street ?? ''
-    //   this.fields.address.city = response.data.city ?? ''
-    //   const [state] = this.states.filter((el) =>
-    //     el.includes(response.data.state) ? el : null
-    //   )
-    //   this.fields.address.state = state
-    //   this.fields.address.zip = response.data.zip ?? ''
-    // },
     async updateProfile() {
       try {
         const response = await this.$axios({

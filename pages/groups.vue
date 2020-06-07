@@ -3,8 +3,9 @@
     <v-row>
       <GroupsNav />
       <v-spacer></v-spacer>
-      <v-btn tile :color="color">
-        My Groups
+      <v-btn tile :color="color" @click="toggleGroupView">
+        <span v-if="allGroups === true">My Groups</span>
+        <span v-else>All Groups</span>
       </v-btn>
       <v-btn class="mx-4" dark color="deep-purple accent-4" @click="addGroup">
         <v-icon dark>mdi-plus</v-icon>
@@ -13,9 +14,14 @@
 
     <v-row>
       <v-col cols="12">
-        <v-row :align="alignment" :justify="justify" style="height: 300px;">
+        <v-row
+          v-if="loaded"
+          :align="alignment"
+          :justify="justify"
+          style="height: 300px;"
+        >
           <v-card
-            v-for="(group, i) in groups"
+            v-for="(group, i) in groupSet"
             :key="i"
             class="mx-auto"
             max-width="400"
@@ -39,7 +45,7 @@
             </v-card-text>
 
             <v-card-actions>
-              <v-btn color="orange" text>
+              <v-btn color="orange" text @click="joinGroup(group.id)">
                 Join
               </v-btn>
 
@@ -49,9 +55,28 @@
             </v-card-actions>
           </v-card>
         </v-row>
+        <v-row
+          v-else
+          :align="alignment"
+          :justify="justify"
+          style="height: 300px;"
+        >
+          <v-progress-circular
+            :size="70"
+            :width="7"
+            color="purple"
+            indeterminate
+          ></v-progress-circular>
+        </v-row>
       </v-col>
     </v-row>
     <GroupsAddModal ref="addGroupModal" />
+    <v-snackbar v-model="snackbar" :timeout="timeout" :top="top">
+      {{ text }}
+      <v-btn color="deep-purple accent-4" text @click="snackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -68,20 +93,52 @@ export default {
     return {
       color: 'deep-purple accent-4',
       alignment: 'center',
-      justify: 'center'
+      justify: 'center',
+      snackbar: false,
+      timeout: 4000,
+      text: '',
+      top: true,
+      allGroups: true
     }
   },
   computed: {
-    ...mapState('groups', ['groups'])
+    ...mapState('groups', ['groups', 'myGroups']),
+    loaded() {
+      return !!(this.groups && this.myGroups)
+    },
+    groupSet() {
+      return this.allGroups ? this.groups : this.myGroups
+    }
   },
   mounted() {
     this.getGroups()
+    this.getMyGroups()
   },
   methods: {
-    ...mapActions('groups', ['getGroups']),
+    ...mapActions('groups', ['getGroups', 'getMyGroups']),
     addGroup() {
       this.$refs.addGroupModal.dialog = true
       this.groupsAddModal = true
+    },
+    async joinGroup(id) {
+      try {
+        const response = await this.$axios({
+          method: 'post',
+          url: `/api/groups/join/${id}`,
+          headers: {
+            Accept: 'application/json',
+            Authortization: this.$auth.getToken('password_grant')
+          }
+        })
+        this.text = response.data.message
+        this.snackbar = true
+      } catch (e) {
+        this.text = 'You are already in this group!'
+        this.snackbar = true
+      }
+    },
+    toggleGroupView() {
+      this.allGroups = !this.allGroups
     }
   }
 }
