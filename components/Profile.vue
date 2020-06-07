@@ -1,28 +1,48 @@
 <template>
   <v-card>
-    <v-tabs
-      v-model="currentTab"
-      background-color="deep-purple accent-4"
-      centered
-      dark
-      icons-and-text
-    >
-      <v-tabs-slider></v-tabs-slider>
+    <div>
+      <v-tabs
+        v-model="currentTab"
+        background-color="deep-purple accent-4"
+        centered
+        dark
+        icons-and-text
+      >
+        <v-tabs-slider></v-tabs-slider>
 
-      <v-tab v-for="tab in tabData" :key="tab.id" :href="tab.href">
-        {{ tab.name }}
-        <v-icon>{{ tab.icon }}</v-icon>
-      </v-tab>
-    </v-tabs>
+        <v-tab v-for="tab in tabData" :key="tab.id" :href="tab.href">
+          {{ tab.name }}
+          <v-icon>{{ tab.icon }}</v-icon>
+        </v-tab>
+      </v-tabs>
 
-    <v-tabs-items v-model="currentTab">
-      <ProfileUser v-if="currentTab === 'tab-1'" />
-      <ProfileHistory v-if="currentTab === 'tab-2'" />
-    </v-tabs-items>
+      <v-tabs-items v-model="currentTab">
+        <div v-if="loaded">
+          <ProfileUser v-if="currentTab === 'tab-1'" />
+          <ProfileHistory v-if="currentTab === 'tab-2'" />
+        </div>
+        <div v-else>
+          <v-container class="fill-height" fluid>
+            <v-row align="center" justify="center" style="height:300px;">
+              <v-col align="center" justify="center">
+                <v-progress-circular
+                  :size="70"
+                  :width="7"
+                  color="purple"
+                  class="my-4"
+                  indeterminate
+                ></v-progress-circular>
+              </v-col>
+            </v-row>
+          </v-container>
+        </div>
+      </v-tabs-items>
+    </div>
   </v-card>
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex'
 import ProfileUser from '~/components/ProfileUser'
 import ProfileHistory from '~/components/ProfileHistory'
 export default {
@@ -64,6 +84,19 @@ export default {
         }
       ]
     }
+  },
+  computed: {
+    ...mapState('profile', ['profile', 'history']),
+    loaded() {
+      return !!(this.profile && this.history)
+    }
+  },
+  mounted() {
+    this.getProfile()
+    this.fetchAndValidateHistory()
+  },
+  methods: {
+    ...mapActions('profile', ['getProfile', 'fetchAndValidateHistory'])
   }
 }
 </script>

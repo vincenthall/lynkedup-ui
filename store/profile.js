@@ -1,6 +1,7 @@
 export const state = () => ({
   currentItem: null,
-  history: null
+  history: null,
+  profile: null
 })
 
 export const mutations = {
@@ -9,6 +10,9 @@ export const mutations = {
   },
   setHistory(state, history) {
     state.history = history
+  },
+  setProfile(state, profile) {
+    state.profile = profile
   }
 }
 
@@ -62,6 +66,28 @@ export const actions = {
   },
   setCurrentItem({ commit }, item) {
     commit('profile/setCurrentItem', item, { root: true })
+  },
+  async getProfile({ commit }) {
+    const response = await this.$axios({
+      method: 'get',
+      url: '/api/profile',
+      headers: {
+        Authorization: this.$auth.getToken('password_grant')
+      }
+    })
+
+    const inputs = {
+      address: {}
+    }
+    inputs.profileData = response.data
+    inputs.about = response.data.about ?? ''
+    inputs.status = response.data.status ?? ''
+    inputs.jobTitle = response.data.job_title ?? ''
+    inputs.address.street = response.data.street ?? ''
+    inputs.address.city = response.data.city ?? ''
+    inputs.address.state = response.data.state ?? ''
+    inputs.address.zip = response.data.zip ?? ''
+    commit('profile/setProfile', inputs, { root: true })
   }
 }
 
