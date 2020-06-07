@@ -221,7 +221,7 @@ export default {
     async getProfile() {
       const response = await this.$axios({
         method: 'get',
-        url: process.env.LARAVEL_ENDPOINT + '/api/profile',
+        url: '/api/profile',
         headers: {
           Authorization: this.$auth.getToken('password_grant')
         }

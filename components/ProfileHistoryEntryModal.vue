@@ -187,8 +187,7 @@ export default {
       try {
         await this.$axios({
           method: 'patch',
-          url:
-            process.env.LARAVEL_ENDPOINT + '/api/jobhistory/' + this.inputs.id,
+          url: '/api/jobhistory/' + this.inputs.id,
           headers: {
             Authorization: this.$auth.getToken('password_grant')
           },
@@ -210,8 +209,7 @@ export default {
       try {
         await this.$axios({
           method: 'delete',
-          url:
-            process.env.LARAVEL_ENDPOINT + '/api/jobhistory/' + this.inputs.id,
+          url: '/api/jobhistory/' + this.inputs.id,
           headers: {
             Authorization: this.$auth.getToken('password_grant')
           }
