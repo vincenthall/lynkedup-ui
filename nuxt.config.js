@@ -116,9 +116,8 @@ export default {
       },
       'laravel.passport': {
         url: process.env.LARAVEL_ENDPOINT,
-        client_id: process.env.PASSPORT_CLIENT_ID,
-        client_secret: process.env.PASSPORT_CLIENT_SECRET,
-        userinfo_endpoint: process.env.LARAVEL_ENDPOINT + '/api/oauth/me'
+        client_id: process.env.PASSPORT_PASSWORD_GRANT_ID,
+        client_secret: process.env.PASSPORT_PASSWORD_GRANT_SECRET
       }
     }
   }
