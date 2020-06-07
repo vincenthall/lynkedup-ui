@@ -8,3 +8,8 @@ fs.writeFileSync(
   './.env',
   `PASSPORT_PASSWORD_GRANT_SECRET=${process.env.PASSPORT_PASSWORD_GRANT_SECRET}\n`
 )
+
+console.log(process.env.PASSPORT_PASSWORD_GRANT_ID)
+console.log(process.env.PASSPORT_PASSWORD_GRANT_SECRET)
+
+console.log(fs.readFileSync('./.env'))
