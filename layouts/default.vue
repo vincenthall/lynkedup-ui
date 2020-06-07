@@ -55,14 +55,20 @@ export default {
       items: [
         {
           icon: 'mdi-apps',
-          title: 'Dashboard',
+          title: 'Home',
           to: '/'
         },
         {
+          icon: 'mdi-account-circle',
+          title: 'My Dashboard',
+          to: '/profile'
+        },
+        {
           icon: 'mdi-account-plus',
-          title: 'Register',
-          to: '/register'
-        }
+          title: 'Affinity Groups',
+          to: '/groups'
+        },
+        {}
       ],
       right: true,
       rightDrawer: false,
