@@ -29,7 +29,7 @@
             <v-img
               class="white--text align-end"
               height="200px"
-              :src="group.image_url"
+              :src="group.image_url || defaultImage"
             >
               <v-card-title>{{ group.name }}</v-card-title>
             </v-img>
@@ -98,7 +98,9 @@ export default {
       timeout: 4000,
       text: '',
       top: true,
-      allGroups: true
+      allGroups: true,
+      defaultImage:
+        'https://vapor-us-east-1-assets-1591370629.s3.amazonaws.com/Social+media+(7)_Google.jpg'
     }
   },
   computed: {
