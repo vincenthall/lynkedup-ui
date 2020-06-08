@@ -104,7 +104,7 @@ export default {
   computed: {
     ...mapState('groups', ['groups', 'myGroups']),
     loaded() {
-      return !!(this.groups && this.myGroups)
+      return !!this.groups
     },
     groupSet() {
       return this.allGroups ? this.groups : this.myGroups
