@@ -31,7 +31,12 @@
         <nuxt />
       </v-container>
     </v-content>
-    <v-footer color="deep-purple accent-4" :fixed="fixed" app>
+    <v-footer
+      color="deep-purple accent-4"
+      :fixed="fixed"
+      style="margin-top: 40px;"
+      app
+    >
       <span>&copy; {{ new Date().getFullYear() }}</span>
       <v-spacer />
       <img src="~/static/vh-logo.png" class="vh-logo" />
@@ -67,6 +72,11 @@ export default {
           icon: 'mdi-account-plus',
           title: 'Affinity Groups',
           to: '/groups'
+        },
+        {
+          icon: 'mdi-briefcase-outline',
+          title: 'Jobs',
+          to: '/jobs'
         },
         {}
       ],

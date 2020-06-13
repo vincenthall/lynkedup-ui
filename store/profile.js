@@ -4,6 +4,10 @@ export const state = () => ({
   profile: null
 })
 
+export const getters = {
+  //
+}
+
 export const mutations = {
   setCurrentItem(state, item) {
     state.currentItem = item

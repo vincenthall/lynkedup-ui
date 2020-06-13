@@ -23,7 +23,7 @@
           <v-card
             v-for="(group, i) in groupSet"
             :key="i"
-            class="mx-auto"
+            class="mx-auto my-2"
             max-width="400"
           >
             <v-img
@@ -92,8 +92,8 @@ export default {
   data() {
     return {
       color: 'deep-purple accent-4',
-      alignment: 'center',
-      justify: 'center',
+      alignment: 'end',
+      justify: 'start',
       snackbar: false,
       timeout: 4000,
       text: '',

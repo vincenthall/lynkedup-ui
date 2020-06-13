@@ -50,18 +50,14 @@ export default {
   },
   methods: {
     async getUsers() {
-      try {
-        const response = await this.$axios({
-          method: 'get',
-          url: process.env.LARAVEL_ENDPOINT + '/api/users',
-          headers: {
-            Authorization: this.$auth.getToken('password_grant')
-          }
-        })
-        this.users = response.data.users
-      } catch (e) {
-        this.error = e.message
-      }
+      const response = await this.$axios({
+        method: 'get',
+        url: process.env.LARAVEL_ENDPOINT + '/api/users',
+        headers: {
+          Authorization: this.$auth.getToken('password_grant')
+        }
+      }).catch((e) => (this.error = e.message))
+      this.users = response.data.users
     }
   }
 }
